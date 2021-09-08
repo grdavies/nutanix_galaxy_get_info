@@ -1,0 +1,36 @@
+---
+# get_subnet_uuids.yml tasks file for nutanix_role_get_info
+# Query the Nutanix API for a list of network subnets
+# Returns a list of dictionaries containing the name and uuid of the results
+# Stores list in fact named subnet_uuids
+# Example output:
+# [
+#   {'name': 'subnetA', 'uuid': '00056e15-0223-d74a-497a-ecf4bbd9b8f0'},
+#   {'name': 'subnetB', 'uuid': '00056e15-0223-d74a-497a-ecf4bbd9b8f1'}
+# ]
+
+- name: Get Subnet List
+  uri:
+    url: "{{ prism_central_api_v3 }}/subnets/list"
+    body:
+      length: 2147483647
+      offset: 0
+      filter: ""
+    method: POST
+    validate_certs: "{{ validate_certs }}"
+    body_format: json
+    status_code: 200
+    headers:
+      Cookie: "{{ session_cookie }}"
+  register: json_images_result
+  ignore_errors: yes
+
+- name: Stash the subnet UUIDs
+  set_fact:
+    subnet_uuids: "{{ subnet_uuids|default([]) + [ {'name': item.spec.name, 'uuid': item.metadata.uuid } ] }}"
+  with_items: "{{ json_images_result.json.entities }}"
+
+- name: Debug | Print Subnet name/UUIDs
+  debug:
+    var: subnet_uuids
+  when: global_debug

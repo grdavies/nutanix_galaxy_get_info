@@ -1,0 +1,30 @@
+---
+# get_karbon_cluster_uuids.yml tasks file for nutanix_role_get_info
+# Queries the Nutanix Karbon API endpoint for a list of Karbon clusters
+# Returns a list of dictionaries containing the name and uuid of the Karbon clusters
+# Stores list in fact named karbon_cluster_uuids
+# Example output:
+# [
+#   {'name': 'clusterA', 'uuid': '00056e15-0223-d74a-497a-ecf4bbd9b8f0'},
+#   {'name': 'clusterB', 'uuid': '00056e15-0223-d74a-497a-ecf4bbd9b8f1'}
+# ]
+
+- name: Get Karbon clusters list
+  uri:
+    url: "{{ prism_central_karbon_api }}/v1-beta.1/k8s/clusters"
+    method: GET
+    validate_certs: "{{ validate_certs }}"
+    headers:
+      Cookie: "{{ session_cookie }}"
+  register: json_karbon_clusters_result
+  ignore_errors: yes
+
+- name: Stash the Karbon cluster UUIDs
+  set_fact:
+    karbon_cluster_uuids: "{{ karbon_cluster_uuids|default([]) + [ {'name': item.name, 'uuid': item.uuid } ] }}"
+  with_items: "{{ json_karbon_clusters_result.json }}"
+
+- name: Debug | Print Karbon cluster name/UUIDs
+  debug:
+    var: karbon_cluster_uuids
+  when: global_debug

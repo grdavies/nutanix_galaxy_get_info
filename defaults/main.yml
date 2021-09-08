@@ -1,0 +1,7 @@
+---
+# defaults file for nutanix_role_get_info
+
+# Control debug
+global_debug: false
+
+# Nutanix Cluster Settings
