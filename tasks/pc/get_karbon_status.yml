@@ -1,0 +1,20 @@
+---
+# get_karbon_status.yml tasks file for nutanix_role_get_info
+- name: Get KArbon Status
+  uri:
+    url: "{{ prism_api_v1 }}/genesis"
+    body:
+      value: "{\".oid\":\"ClusterManager\",\".method\":\"is_service_enabled\",\".kwargs\":{\"service_name\":\"KarbonUIService\"}}"
+    method: POST
+    validate_certs: "{{ validate_certs }}"
+    body_format: json
+    status_code: 200
+    headers:
+      Cookie: "{{ session_cookie }}"
+  register: json_karbon_service_result
+  ignore_errors: yes
+
+- name: Debug | Print Karbon service result
+  debug:
+    var: json_karbon_service_result
+  when: global_debug

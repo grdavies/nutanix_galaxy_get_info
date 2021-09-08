@@ -1,0 +1,5 @@
+---
+# main.yml tasks file for nutanix_role_get_info/common
+- import_tasks: get_cluster_uuids.yml
+- import_tasks: get_subnet_uuids.yml
+- import_tasks: get_vm_uuids.yml

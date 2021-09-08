@@ -1,5 +1,12 @@
 ---
 # main.yml tasks file for nutanix_role_get_info
-- import_tasks: get_cluster_uuids.yml
-- import_tasks: get_subnet_uuids.yml
-- import_tasks: get_karbon_cluster_uuids.yml
+- import_tasks: common/main.yml
+  when: session_cookie is defined
+- import_tasks: pc/main.yml
+  when: >
+    ( session_cookie is defined )
+    ( prism_type == "pc" )
+- import_tasks: pe/main.yml
+  when: >
+    ( session_cookie is defined )
+    ( prism_type == "pe" )

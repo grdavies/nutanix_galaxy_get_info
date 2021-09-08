@@ -1,0 +1,37 @@
+---
+# get_vm_uuids.yml tasks file for nutanix_role_get_info
+# Queries the Nutanix Prism Central API endpoint for a list of virtual machines
+# Returns a list of dictionaries containing the name and uuid of the virtual machines
+# Example output:
+# [
+#   {'name': 'vmA', 'uuid': '00056e15-0223-d74a-497a-ecf4bbd9b8f0'},
+#   {'name': 'vmB', 'uuid': '00056e15-0223-d74a-497a-ecf4bbd9b8f1'}
+# ]
+
+- name: Get clusters list
+  uri:
+    url: "{{ prism_api_v3 }}/vms/list"
+    body:
+      kind: vm
+      sort_order: ASCENDING
+      offset: 0
+      length: 2147483647
+      sort_attribute: ''
+    method: POST
+    validate_certs: "{{ validate_certs }}"
+    body_format: json
+    status_code: 200
+    headers:
+      Cookie: "{{ session_cookie }}"
+  register: json_vms_result
+  ignore_errors: yes
+
+- name: Stash the VM UUIDs
+  set_fact:
+    vm_uuids: "{{ vm_uuids|default([]) + [ {'name': item.spec.name, 'uuid': item.metadata.uuid } ] }}"
+  with_items: "{{ json_vms_result.json.entities }}"
+
+- name: Debug | Print VM name/UUIDs
+  debug:
+    var: vm_uuids
+  when: global_debug
