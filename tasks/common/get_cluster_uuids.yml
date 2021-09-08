@@ -10,7 +10,7 @@
 
 - name: Get clusters list
   uri:
-    url: "{{ prism_central_api_v3 }}/clusters/list"
+    url: "{{ prism_api_v3 }}/clusters/list"
     body:
       kind: cluster
       sort_order: ASCENDING
