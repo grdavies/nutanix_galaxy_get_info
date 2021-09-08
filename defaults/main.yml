@@ -5,3 +5,6 @@
 global_debug: false
 
 # Nutanix Cluster Settings
+karbon_enabled: false
+flow_enabled: false
+calm_enabled: false

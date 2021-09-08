@@ -10,11 +10,17 @@
     body_format: json
     status_code: 200
     headers:
-      Cookie: "{{ session_cookie }}"
+      Authorization: "{{ encoded_credentials }}"
   register: json_karbon_service_result
-  ignore_errors: yes
+  ignore_errors: no
 
-- name: Debug | Print Karbon service result
+- name: Update fact karbon_enabled
+  set_fact:
+    karbon_enabled: true
+  when:
+    - '"true" in json_karbon_service_result.json'
+
+- name: Debug | Print fact karbon_enabled
   debug:
-    var: json_karbon_service_result
+    var: karbon_enabled
   when: global_debug
