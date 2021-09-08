@@ -2,4 +2,7 @@
 # main.yml tasks file for nutanix_role_get_info/pc
 - import_tasks: get_flow_status.yml
 - import_tasks: get_karbon_status.yml
+- import_tasks: get_karbon_cluster_uuids.yml
+  when:
+    - karbon_enabled
 - import_tasks: get_calm_status.yml

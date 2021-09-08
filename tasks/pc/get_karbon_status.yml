@@ -14,7 +14,7 @@
   register: json_karbon_service_result
   ignore_errors: no
 
-- name: Update fact karbon_enabled
+- name: Update fact karbon_enabled if KarbonUIService is enabled
   set_fact:
     karbon_enabled: true
   when:

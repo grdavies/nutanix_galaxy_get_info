@@ -5,6 +5,14 @@
 global_debug: false
 
 # Nutanix Cluster Settings
+
+# Nutanix Cluster Service State
 karbon_enabled: false
 flow_enabled: false
 calm_enabled: false
+
+# Nutanix Cluster Data
+cluster_uuids: []
+subnet_uuids: []
+vm_uuids: []
+karbon_cluster_uuids: []
